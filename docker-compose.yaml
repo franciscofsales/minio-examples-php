@@ -1,0 +1,92 @@
+version: '3.7'
+services:
+  minio:
+    image: 'bitnami/minio:2022.12.12'
+    ports:
+      - '9000:9000'
+      - '9001:9001'
+    environment:
+      - MINIO_ROOT_USER=${PGADMIN_EMAIL}
+      - MINIO_ROOT_PASSWORD=${PGADMIN_PASSWORD}
+  # loki:
+  #   image: grafana/loki:2.6.1
+  #   ports:
+  #     - 3100
+  #   volumes:
+  #     # directory must be created first, with uid:gid 10001:10001
+  #     - ./volumes/loki:/loki
+  #   labels:
+  #     - com.centurylinklabs.watchtower.enable="false"
+  # promtail:
+  #   image: grafana/promtail:2.6.1
+  #   volumes:
+  #     # custom config will read logs from the containers of
+  #     # this project
+  #     - ./loki/promtail-config.yaml:/etc/promtail/config.yml
+  #     # to read container labels and logs
+  #     - /var/run/docker.sock:/var/run/docker.sock
+  #     - /var/lib/docker/containers:/var/lib/docker/containers
+  #   labels:
+  #     - com.centurylinklabs.watchtower.enable="false"
+  #  # will be available at http://127.0.0.1:3000
+  # # default credentials: admin/admin
+  # grafana:
+  #   image: grafana/grafana:9.2.2
+  #   ports:
+  #     - "3000:3000"
+  #   volumes:
+  #     # directory must be created first, with uid:gid 472:472
+  #     - ./volumes/grafana:/var/lib/grafana
+  #     # automatically configure the loki datasource
+  #     - ./loki/grafana/provisioning/:/etc/grafana/provisioning/
+  #   labels:
+  #     - com.centurylinklabs.watchtower.enable="${AUTO_UPDATE_GRAFANA}"
+  # pgadmin:
+  #   container_name: pgadmin
+  #   image: dpage/pgadmin4:latest
+  #   environment:
+  #     PGADMIN_DEFAULT_EMAIL: ${PGADMIN_EMAIL}
+  #     PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_PASSWORD}
+  #   ports:
+  #     - "5050:80"
+  #   depends_on:
+  #     - postgres
+  #   volumes:
+  #     - ./pgadmin:/var/lib/pgadmin
+  #   labels:
+  #     - com.centurylinklabs.watchtower.enable="false"
+  # postgres:
+  #   image: postgres:14-alpine
+  #   environment:
+  #     POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+  #     POSTGRES_USER: ${POSTGRES_USER}
+  #     POSTGRES_DB: ${POSTGRES_DB}
+  #   healthcheck:
+  #     interval: 5s
+  #     retries: 3
+  #     test:
+  #       - CMD-SHELL
+  #       - pg_isready -U ${POSTGRES_USER}
+  #     timeout: 10s
+  #   ports:
+  #     - 5432:5432
+  #   volumes:
+  #     - ./postgres:/var/lib/postgresql/data
+  #     - /etc/localtime:/etc/localtime:ro
+  #   labels:
+  #     - com.centurylinklabs.watchtower.enable="false"
+  # watchtower:
+  #   container_name: watchtower
+  #   image: containrrr/watchtower
+  #   volumes:
+  #     - /var/run/docker.sock:/var/run/docker.sock
+  #     - /etc/localtime:/etc/localtime:ro
+  #   #restart: always
+  #   restart: 'no'
+  #   environment:
+  #     - WATCHTOWER_CLEANUP=true
+  #     - WATCHTOWER_NO_STARTUP_MESSAGE=true
+  #     - WATCHTOWER_NOTIFICATIONS_LEVEL=info
+  #     - WATCHTOWER_INCLUDE_STOPPED=true
+  #   # command: --schedule "00 00 12 * * *"
+  #   command: --run-once

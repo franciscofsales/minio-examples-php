@@ -1,0 +1,12 @@
+{
+    "name": "fsales/minio",
+    "type": "library",
+    "require": {
+        "aws/aws-sdk-php": "^3.260"
+    },
+    "autoload": {
+        "psr-4": {
+            "Fsales\\Minio\\": "src/"
+        }
+    }
+}
